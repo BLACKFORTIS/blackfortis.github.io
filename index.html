@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050505">
+  <title>BLACK FORTIS | 체험하기</title>
+  <style>
+    :root{color-scheme:dark;--gold:#d8ad59;--gold-bright:#f5d991;--ink:#050505}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--ink);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",Arial,sans-serif}
+    body{overflow-x:hidden}
+    .intro{position:fixed;inset:0;z-index:10;background:#050505;display:grid;place-items:center;transition:opacity .9s ease,visibility .9s ease}
+    .intro.is-done{opacity:0;visibility:hidden;pointer-events:none}
+    .intro video{width:100%;height:100%;object-fit:contain;background:#050505}
+    .intro-copy{position:absolute;left:50%;bottom:max(28px,env(safe-area-inset-bottom));transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);text-align:center;color:#e9c878;text-shadow:0 2px 18px #000;font-size:13px;letter-spacing:.12em}
+    .sound-start{position:absolute;left:50%;bottom:max(70px,calc(env(safe-area-inset-bottom) + 70px));transform:translateX(-50%);border:1px solid var(--gold);border-radius:999px;background:rgba(5,5,5,.82);color:var(--gold-bright);padding:12px 18px;font-weight:800;cursor:pointer;backdrop-filter:blur(8px)}
+    .sound-start.is-hidden{display:none}
+    .landing{width:min(1024px,100%);margin:0 auto;opacity:0;transform:translateY(18px);transition:opacity .9s ease .25s,transform .9s ease .25s}
+    .landing.is-visible{opacity:1;transform:none}
+    .poster{display:block;width:100%;height:auto}
+    .experience{padding:clamp(28px,5vw,64px) 20px max(36px,env(safe-area-inset-bottom));background:linear-gradient(180deg,#090909,#16110a);text-align:center;border-top:1px solid rgba(216,173,89,.55)}
+    .experience h1{margin:0;color:var(--gold-bright);font-size:clamp(26px,5vw,54px);font-weight:950;letter-spacing:-.06em;text-shadow:0 3px 16px rgba(216,173,89,.2)}
+    .experience p{margin:12px auto 24px;color:#eadfc9;font-size:clamp(14px,2vw,18px);font-weight:700}
+    .experience a{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-width:min(88vw,420px);padding:16px 26px;border:1px solid #f7d98d;border-radius:14px;background:linear-gradient(135deg,#f5d991,#b77a25);box-shadow:0 10px 30px #000a;color:#160f05;font-size:clamp(17px,2.5vw,23px);font-weight:950;text-decoration:none;transition:transform .18s ease,filter .18s ease}
+    .experience a:hover,.experience a:focus-visible{transform:translateY(-3px);filter:brightness(1.1)}
+    .experience a:active{transform:translateY(0) scale(.98)}
+    @media(prefers-reduced-motion:reduce){.intro,.landing,.experience a{transition:none}}
+  </style>
+</head>
+<body>
+  <section class="intro" id="intro" aria-label="BLACK FORTIS 포효 인트로">
+    <video id="introVideo" autoplay muted playsinline preload="auto" poster="black-fortis-original.png">
+      <source src="black-fortis-emblem-roar.mp4" type="video/mp4">
+    </video>
+    <button class="sound-start" id="soundStart" type="button">소리와 함께 시작하기</button>
+    <div class="intro-copy">BLACK FORTIS · PRIVATE MEMBERS CLUB</div>
+  </section>
+
+  <main class="landing" id="landing">
+    <img class="poster" src="black-fortis-original.png" alt="BLACK FORTIS 홈페이지 전체 안내">
+    <section class="experience" aria-labelledby="experience-title">
+      <h1 id="experience-title">블랙 포르티스 체험하기</h1>
+      <p>공간과 프로그램을 직접 경험해보세요.</p>
+      <a href="https://open.kakao.com/o/sZQahZIi" target="_blank" rel="noopener noreferrer">카카오톡으로 체험 신청하기 <span aria-hidden="true">→</span></a>
+    </section>
+  </main>
+
+  <script>
+    const intro = document.getElementById('intro');
+    const landing = document.getElementById('landing');
+    const video = document.getElementById('introVideo');
+    const soundStart = document.getElementById('soundStart');
+    let finished = false;
+
+    function showLanding(){
+      if(finished) return;
+      finished = true;
+      intro.classList.add('is-done');
+      landing.classList.add('is-visible');
+      video.pause();
+    }
+
+    video.addEventListener('ended', showLanding);
+    soundStart.addEventListener('click', async () => {
+      video.muted = false;
+      video.volume = 1;
+      soundStart.classList.add('is-hidden');
+      try { await video.play(); } catch(e) { video.muted = true; await video.play(); }
+    });
+
+    video.play().catch(() => {
+      soundStart.textContent = '눌러서 포효 영상 시작하기';
+    });
+  </script>
+</body>
+</html>
